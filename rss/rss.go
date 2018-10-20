@@ -67,6 +67,7 @@ type Item struct {
 	ItunesExplicit          string     `xml:"itunes:explicit,omitempty"`
 	ItunesOrder             string     `xml:"itunes:order,omitempty"`
 	ItunesisClosedCaptioned string     `xml:"itunes:isClosedCaptioned,omitempty"`
+	ItunesBlock             string     `xml:"itunes:block,allowempty"`
 }
 
 type Enclosure struct {
