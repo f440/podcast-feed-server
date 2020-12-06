@@ -31,12 +31,12 @@ func main() {
 	fs := http.FileServer(http.Dir(config.Server.FileRoot))
 	http.Handle("/", fs)
 
-	http.HandleFunc(config.Server.FeedPath, FeedHandler)
+	http.HandleFunc(config.Server.FeedPath, feedHandler)
 
 	http.ListenAndServe(config.Server.Listen, nil)
 }
 
-func FeedHandler(w http.ResponseWriter, r *http.Request) {
+func feedHandler(w http.ResponseWriter, r *http.Request) {
 	config := config.Config{}
 	if err := config.Load("config.toml"); err != nil {
 		panic(err)
