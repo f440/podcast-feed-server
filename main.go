@@ -73,11 +73,11 @@ func FeedHandler(w http.ResponseWriter, r *http.Request) {
 		if info.IsDir() {
 			return nil
 		}
-		if !strings.HasSuffix(info.Name(), ".mp3") {
+		if !strings.HasSuffix(info.Name(), ".m4a") {
 			return nil
 		}
 
-		title := strings.Replace(info.Name(), ".mp3", "", 1)
+		title := strings.Replace(info.Name(), ".m4a", "", 1)
 		pubDate := info.ModTime().Format(time.RFC1123)
 		url, err := escapeURL(config.RSS.URL + strings.Replace(path, config.Server.FileRoot, "", 1))
 		if err != nil {
