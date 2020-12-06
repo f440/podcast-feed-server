@@ -31,7 +31,7 @@ func main() {
 	fs := http.FileServer(http.Dir(config.Server.FileRoot))
 	http.Handle("/", userAgentHandler(fs))
 
-	http.HandleFunc(config.Server.FeedPath, feedHandler)
+	http.Handle(config.Server.FeedPath, userAgentHandler(http.HandlerFunc(feedHandler)))
 
 	http.ListenAndServe(config.Server.Listen, nil)
 }
