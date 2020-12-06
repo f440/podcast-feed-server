@@ -29,11 +29,30 @@ func main() {
 	}
 
 	fs := http.FileServer(http.Dir(config.Server.FileRoot))
-	http.Handle("/", fs)
+	http.Handle("/", userAgentHandler(fs))
 
 	http.HandleFunc(config.Server.FeedPath, feedHandler)
 
 	http.ListenAndServe(config.Server.Listen, nil)
+}
+
+func userAgentHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		config := config.Config{}
+		if err := config.Load("config.toml"); err != nil {
+			panic(err)
+		}
+
+		if config.Server.PermitUA != "" {
+			ua := r.Header.Get("User-Agent")
+			if strings.Index(ua, config.Server.PermitUA) == -1 {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func feedHandler(w http.ResponseWriter, r *http.Request) {
