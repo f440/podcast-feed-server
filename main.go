@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/xml"
-	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,7 +45,7 @@ func logHandler(next http.Handler) http.Handler {
 		method := r.Method
 		path := r.URL.Path
 
-		fmt.Printf("Remote: %s [%s] %s\n", rAddr, method, path)
+		log.Printf("%s [%s] %s\n", rAddr, method, path)
 		next.ServeHTTP(w, r)
 	})
 }
