@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/xml"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -29,13 +30,24 @@ func main() {
 	}
 
 	fs := http.FileServer(http.Dir(config.Server.FileRoot))
-	http.Handle("/", userAgentHandler(fs))
+	http.Handle("/", logHandler(userAgentHandler(fs)))
 
-	http.Handle(config.Server.FeedPath, userAgentHandler(http.HandlerFunc(feedHandler)))
+	http.Handle(config.Server.FeedPath, logHandler(userAgentHandler(http.HandlerFunc(feedHandler))))
 
 	if err := http.ListenAndServe(config.Server.Listen, nil); err != nil {
 		panic(err)
 	}
+}
+
+func logHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rAddr := r.RemoteAddr
+		method := r.Method
+		path := r.URL.Path
+
+		fmt.Printf("Remote: %s [%s] %s\n", rAddr, method, path)
+		next.ServeHTTP(w, r)
+	})
 }
 
 func userAgentHandler(next http.Handler) http.Handler {
