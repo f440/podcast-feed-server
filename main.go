@@ -33,7 +33,9 @@ func main() {
 
 	http.Handle(config.Server.FeedPath, userAgentHandler(http.HandlerFunc(feedHandler)))
 
-	http.ListenAndServe(config.Server.Listen, nil)
+	if err := http.ListenAndServe(config.Server.Listen, nil); err != nil {
+		panic(err)
+	}
 }
 
 func userAgentHandler(next http.Handler) http.Handler {
