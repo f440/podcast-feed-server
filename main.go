@@ -109,6 +109,11 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 		if info.IsDir() {
 			return nil
 		}
+		for _, pattern := range config.Server.Exclude {
+			if strings.Contains(path, pattern) {
+				return nil
+			}
+		}
 		if !strings.HasSuffix(info.Name(), ".m4a") {
 			return nil
 		}

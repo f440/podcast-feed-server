@@ -18,6 +18,7 @@ type Server struct {
 	FeedPath string `toml:"feed_path"`
 	FileRoot string `toml:"file_root"`
 	PermitUA string `toml:"permit_ua"`
+	Exclude  []string
 }
 
 func (c *Config) Load(file string) error {
