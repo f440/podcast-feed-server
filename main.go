@@ -59,7 +59,7 @@ func userAgentHandler(next http.Handler) http.Handler {
 
 		if config.Server.PermitUA != "" {
 			ua := r.Header.Get("User-Agent")
-			if strings.Index(ua, config.Server.PermitUA) == -1 {
+			if !strings.Contains(ua, config.Server.PermitUA) {
 				http.Error(w, "Forbidden", http.StatusForbidden)
 				return
 			}
@@ -103,6 +103,9 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 
 	items := []*rss.Item{}
 	err = filepath.Walk(config.Server.FileRoot, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if info.IsDir() {
 			return nil
 		}
