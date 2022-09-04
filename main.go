@@ -32,7 +32,7 @@ func main() {
 	fs := http.FileServer(http.Dir(config.Server.FileRoot))
 	http.Handle("/", logHandler(userAgentHandler(fs)))
 
-	http.Handle(config.Server.FeedPath, logHandler(userAgentHandler(http.HandlerFunc(feedHandler))))
+	http.Handle(config.Server.FeedPath, logHandler(basicAuthHandler(http.HandlerFunc(feedHandler))))
 
 	if err := http.ListenAndServe(config.Server.Listen, nil); err != nil {
 		panic(err)
@@ -61,6 +61,23 @@ func userAgentHandler(next http.Handler) http.Handler {
 			ua := r.Header.Get("User-Agent")
 			if !strings.Contains(ua, config.Server.PermitUA) {
 				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func basicAuthHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		config := config.Config{}
+		if err := config.Load("config.toml"); err != nil {
+			panic(err)
+		}
+		if config.Server.User != "" {
+			user, pw, ok := r.BasicAuth()
+			if !ok || user != config.Server.User || pw != config.Server.Password {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
 		}

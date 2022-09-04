@@ -18,6 +18,8 @@ type Server struct {
 	FeedPath string `toml:"feed_path"`
 	FileRoot string `toml:"file_root"`
 	PermitUA string `toml:"permit_ua"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
 	Exclude  []string
 }
 

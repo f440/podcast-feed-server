@@ -7,6 +7,8 @@ url = "http://127.0.0.1:3000/"
 listen = "127.0.0.1:3000"
 file_root = "/Users/f440/Music/mp3/"
 feed_path = "/feed.xml"
+# user      = "user"
+# password  = "password"
 # permit_ua = "curl"
 # exclude = [
 #   "pattern1",
